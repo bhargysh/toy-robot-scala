@@ -1,0 +1,9 @@
+# Build output directories
+/target/**
+/project/target
+/project/project
+
+# IntelliJ stuff
+/**/.idea
+/app/.idea_modules
+/**/*.iml

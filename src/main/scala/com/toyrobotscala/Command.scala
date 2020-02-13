@@ -48,18 +48,10 @@ object Command {
     override def execute(grid: Grid, robot: Robot): Robot = {
       if (robot.hasValidPositionOn(grid)) {
         robot.direction match {
-          case North => {
-            newRobotOrCurrent(grid, robot.copy(y = robot.y + 1), robot)
-          }
-          case East => {
-            newRobotOrCurrent(grid, robot.copy(x = robot.x + 1), robot)
-          }
-          case South => {
-            newRobotOrCurrent(grid, robot.copy(y = robot.y - 1), robot)
-          }
-          case West => {
-            newRobotOrCurrent(grid, robot.copy(x = robot.x - 1), robot)
-          }
+          case North => newRobotOrCurrent(grid, robot.copy(y = robot.y + 1), robot)
+          case East => newRobotOrCurrent(grid, robot.copy(x = robot.x + 1), robot)
+          case South => newRobotOrCurrent(grid, robot.copy(y = robot.y - 1), robot)
+          case West => newRobotOrCurrent(grid, robot.copy(x = robot.x - 1), robot)
         }
       } else {
         robot
@@ -71,6 +63,6 @@ object Command {
   }
   private def newRobotOrCurrent(grid: Grid, newRobot: Robot, currentRobot: Robot): Robot = {
     if(newRobot.hasValidPositionOn(grid)) newRobot else currentRobot
-    //  TODO: should it log if it could not move?
+    //  TODO: ignore the command if it can't move (e.g. about to fall)
   }
 }

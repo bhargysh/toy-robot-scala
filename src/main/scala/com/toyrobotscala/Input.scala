@@ -14,7 +14,6 @@ object Input {
     case "RIGHT"  => Command.Right
     case "REPORT" => Command.Report
     case placePattern(x, y, direction) => Command.Place(x.toInt, y.toInt, Direction.fromStr(direction))
-    case _ => ???
   }
 
   private val placePattern: Regex = """^PLACE (\d+),(\d+),(NORTH|SOUTH|EAST|WEST)$""".r

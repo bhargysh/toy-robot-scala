@@ -1,6 +1,5 @@
 package com.toyrobotscala
 
-import cats.effect.IO
 import com.toyrobotscala.Direction.{East, North, South, West}
 
 sealed trait Command {
@@ -31,7 +30,7 @@ object Command {
       }
     }
   }
-  case object Right extends Command {
+  case object Right extends Command { //TODO: left and right just move in 90deg angle, we don't care about a current robot or the grid
     override def execute(grid: Grid, robot: Robot): Robot = {
       if(robot.hasValidPositionOn(grid)) {
         robot.direction match {
@@ -69,7 +68,6 @@ object Command {
   }
   case object Report extends Command {
     override def execute(grid: Grid, robot: Robot): Robot = robot
-//    TODO: converter that takes a robot and prints its position i.e. returns IO[Unit]
   }
   private def newRobotOrCurrent(grid: Grid, newRobot: Robot, currentRobot: Robot): Robot = {
     if(newRobot.hasValidPositionOn(grid)) newRobot else currentRobot

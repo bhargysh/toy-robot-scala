@@ -8,12 +8,13 @@ object Input {
     case _ => isPlace(rawInput)
   }
 
-  def parseValidCommand(input: String): Command = input match {
+  val parseValidCommand: PartialFunction[String, Command] = {
     case "MOVE"   => Command.Move
     case "LEFT"   => Command.Left
     case "RIGHT"  => Command.Right
     case "REPORT" => Command.Report
     case placePattern(x, y, direction) => Command.Place(x.toInt, y.toInt, Direction.fromStr(direction))
+    case _ => ???
   }
 
   private val placePattern: Regex = """^PLACE (\d+),(\d+),(NORTH|SOUTH|EAST|WEST)$""".r

@@ -8,23 +8,40 @@ object Main {
   def main(args: Array[String]): Unit = {
 
     println("👋🏽 From Toy 🤖 App")
-    val rawStr = readLine().toUpperCase
+    val rawStr: String = readLine().toUpperCase
 
     val robot = Robot(0, 0, North)
     val grid = Grid(Range(0, 5), Range(0, 5))
     val game = Game(grid, robot)
+    val command = Input.parseValidCommand(rawStr)
 
-    while (Input.isValid(rawStr)) {
-      val command = Input.parseValidCommand(rawStr)
-      if (command == Command.Report) {
-        Converter.logRobotPosition(robot)
-        return
-      } else {
-        game.play(command)
+    def input(str: String): Game = {
+      if(!Input.parseValidCommand.isDefinedAt(rawStr)) {
+        input(rawStr)
+      }
+      else if (command == Command.Report) {
+        println(robot)
+        input(rawStr)
+      }
+      else {
+        val newGame = game.play(command)
+        newGame
+//        input(rawStr)
       }
     }
-    println("🙅‍🙅‍🙅‍ Invalid command 🙅‍🙅‍🙅‍")
+    input(rawStr)
+
+//    while (true) {
+//      val command = Input.parseValidCommand(rawStr)
+//      if (command == Command.Report) {
+//        println(robot)
+//      } else {
+//        val newGame = game.play(command)
+//        newGame
+//      }
+//    }
+
   }
 }
-// TODO; only accept place as first command
-// TODO: use validated
+// TODO: throws an Exception if no input or invalid input is given
+// TODO: only accept place as first command

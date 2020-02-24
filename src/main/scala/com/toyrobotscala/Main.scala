@@ -11,28 +11,23 @@ object Main {
 
     val robot = Robot(0, 0, North)
     val grid = Grid(Range(0, 5), Range(0, 5))
-    val game = Game(grid, robot)
-    val stringToMaybeCommand: String => Option[Command] = Input.parseValidCommand.lift
+    val initialGame = Game(grid, robot)
 
-    @scala.annotation.tailrec
-    def input(str: String): Game = {
-      if(stringToMaybeCommand(str).isEmpty) {
-        input(readLine().toUpperCase)
-      }
-      else if (stringToMaybeCommand(str).contains(Command.Report)) {
-        println(robot)
-        input(readLine().toUpperCase)
-      }
-      else {
-        stringToMaybeCommand(str) match {
-          case Some(command) =>
-            val newGame = game.play(command)
-            newGame
-          case None => input(readLine().toUpperCase)
-        }
-      }
+    go(initialGame)
+  }
+  @scala.annotation.tailrec
+  def go(game: Game): Nothing = {
+    val str = readLine().toUpperCase
+    val maybeComand = Input.parseValidCommand.lift(str)
+
+    maybeComand match {
+      case Some(Command.Report) =>
+        println(game.currentRobot)
+        go(game)
+      case Some(command) =>
+        val newGame = game.play(command)
+        go(newGame)
+      case None => go(game)
     }
-    input(readLine().toUpperCase)
   }
 }
-// TODO: only accept place as first command

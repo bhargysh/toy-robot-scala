@@ -3,10 +3,6 @@ package com.toyrobotscala
 import scala.util.matching.Regex
 
 object Input {
-  def isValid(rawInput: String): Boolean = rawInput match {
-    case "MOVE" | "LEFT" | "RIGHT" | "REPORT" => true
-    case _ => isPlace(rawInput)
-  }
 
   val parseValidCommand: PartialFunction[String, Command] = {
     case "MOVE"   => Command.Move

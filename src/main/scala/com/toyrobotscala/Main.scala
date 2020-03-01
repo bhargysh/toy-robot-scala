@@ -1,38 +1,44 @@
 package com.toyrobotscala
-import cats.effect.IO
+import cats.effect.{ExitCode, IO, IOApp}
 import com.toyrobotscala.Direction.North
 
 import scala.io.StdIn.readLine
 
-object Main {
+object Main extends IOApp {
 
-  def main(args: Array[String]): Unit = {
-
-    printLine(("👋🏽 From Toy 🤖 App")).unsafeRunSync()
+  override def run(args: List[String]): IO[ExitCode] = {
+    val greeting: IO[Unit] = printLine(("👋🏽 From Toy 🤖 App"))
 
     val robot = Robot(0, 0, North)
     val grid = Grid(Range(0, 5), Range(0, 5))
     val initialGame = Game(grid, robot)
 
-    go(initialGame)
+    greeting
+      .flatMap( _ => go(initialGame))
+      .map(_ => ExitCode.Success)
   }
-  def go(game: Game): IO[Unit] = runIoOfMaybeCommand match {
-    case Some(Command.Report) =>
-      runIoOfReportCommand(game)
-      go(game)
-    case Some(command) =>
-      val newGame = game.play(command)
-      go(newGame)
-    case None => go(game)
+  def go(game: Game): IO[Unit] = {
+    ioOfMaybeCommand.flatMap {
+      case Some(Command.Report) =>
+        ioOfReportCommand(game).flatMap { _ =>
+          go(game)
+        }
+      case Some(command) =>
+        val newGame = game.play(command)
+        go(newGame)
+      case None => go(game)
+    }
   }
   private def printLine(str: String): IO[Unit] = IO(println(str))
-  private def getInput: IO[String] = IO(readLine().toUpperCase)
-  private def runIoOfMaybeCommand: Option[Command] = {
+  private val getInput: IO[String] = IO(readLine().toUpperCase)
+  private val ioOfMaybeCommand: IO[Option[Command]] = {
     getInput
       .map(inputStr => Input.parseValidCommand.lift(inputStr))
-      .unsafeRunSync()
   }
-  private def runIoOfReportCommand(game: Game): Unit = {
-    printLine(game.currentRobot.toString).unsafeRunSync()
+  private def ioOfReportCommand(game: Game): IO[Unit] = {
+    printLine(game.currentRobot.toString)
   }
 }
+
+//TODO: for yield
+//TODO: command hierarchy with no OOP

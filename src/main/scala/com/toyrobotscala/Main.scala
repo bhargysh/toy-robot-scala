@@ -1,13 +1,15 @@
 package com.toyrobotscala
+import cats.Functor
 import cats.effect.{ExitCode, IO, IOApp}
 import com.toyrobotscala.Direction.North
+import cats.syntax.functor._
 
 import scala.io.StdIn.readLine
 
 object Main extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {
-    val greeting: IO[Unit] = printLine(("👋🏽 From Toy 🤖 App"))
+    val greeting: IO[Unit] = printLine("👋🏽 From Toy 🤖 App")
 
     val robot = Robot(0, 0, North)
     val grid = Grid(Range(0, 5), Range(0, 5))
@@ -29,8 +31,9 @@ object Main extends IOApp {
       case None => go(game)
     }
   }
-  private def printLine(str: String): IO[Unit] = IO(println(str))
-  private val getInput: IO[String] = IO(readLine().toUpperCase)
+
+  private def printLine[F[_] : Console](str: String): F[Unit] = Console[F].printLine(str)
+  private def getInput[F[_] : Console : Functor]: F[String] = Console[F].readLine().map { str => str.toUpperCase }
   private val ioOfMaybeCommand: IO[Option[Command]] = {
     getInput
       .map(inputStr => Input.parseValidCommand.lift(inputStr))
@@ -40,5 +43,5 @@ object Main extends IOApp {
   }
 }
 
-//TODO: for yield
+//TODO: replace the IO monads with generalised type F
 //TODO: command hierarchy with no OOP

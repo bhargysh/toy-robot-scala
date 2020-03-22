@@ -41,5 +41,3 @@ object Main extends IOApp {
     Console[F].printLine(game.currentRobot.toString)
   }
 }
-
-//TODO: command hierarchy with no OOP

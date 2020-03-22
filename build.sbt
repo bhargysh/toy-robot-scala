@@ -8,3 +8,12 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-effect"  % "2.0.0",
   "org.specs2"    %% "specs2-core"  % "4.8.3" % Test,
 )
+
+scalacOptions ++= Seq(
+  "-Xfatal-warnings",
+  "-deprecation",
+  "-unchecked",
+  "-feature",
+  "-language:higherKinds",
+  "-Ywarn-unused:imports",
+)

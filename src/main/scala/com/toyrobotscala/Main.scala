@@ -1,26 +1,25 @@
 package com.toyrobotscala
-import cats.Functor
+import cats.{Functor, Monad}
 import cats.effect.{ExitCode, IO, IOApp}
 import com.toyrobotscala.Direction.North
 import cats.syntax.functor._
-
-import scala.io.StdIn.readLine
+import cats.syntax.flatMap._
 
 object Main extends IOApp {
 
   override def run(args: List[String]): IO[ExitCode] = {
-    val greeting: IO[Unit] = printLine("👋🏽 From Toy 🤖 App")
+    def greeting[F[_] : Console](): F[Unit] = printLine("👋🏽 From Toy 🤖 App")
 
     val robot = Robot(0, 0, North)
     val grid = Grid(Range(0, 5), Range(0, 5))
     val initialGame = Game(grid, robot)
 
-    greeting
+    greeting()
       .flatMap( _ => go(initialGame))
       .map(_ => ExitCode.Success)
   }
-  def go(game: Game): IO[Unit] = {
-    ioOfMaybeCommand.flatMap {
+  def go[F[_] : Console : Monad](game: Game): F[Unit] = {
+    ioOfMaybeCommand().flatMap {
       case Some(Command.Report) =>
         ioOfReportCommand(game).flatMap { _ =>
           go(game)
@@ -34,14 +33,13 @@ object Main extends IOApp {
 
   private def printLine[F[_] : Console](str: String): F[Unit] = Console[F].printLine(str)
   private def getInput[F[_] : Console : Functor]: F[String] = Console[F].readLine().map { str => str.toUpperCase }
-  private val ioOfMaybeCommand: IO[Option[Command]] = {
+  private def ioOfMaybeCommand[F[_]: Console : Monad](): F[Option[Command]] = {
     getInput
       .map(inputStr => Input.parseValidCommand.lift(inputStr))
   }
-  private def ioOfReportCommand(game: Game): IO[Unit] = {
-    printLine(game.currentRobot.toString)
+  private def ioOfReportCommand[F[_]: Console](game: Game): F[Unit] = {
+    Console[F].printLine(game.currentRobot.toString)
   }
 }
 
-//TODO: replace the IO monads with generalised type F
 //TODO: command hierarchy with no OOP

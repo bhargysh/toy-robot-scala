@@ -4,21 +4,14 @@ import com.toyrobotscala.Direction.{East, North, South, West}
 
 case class Game(grid: Grid, currentRobot: Robot) {
 
-  def play(command: Command): Game = {
-    command match {
-      case position: Command.UpdateRobotPosition => run(position)
-      case changeDirection: Command.ChangeDirectionOfRobot => rotate(changeDirection)
-      case _: Command.UnchangedRobot => Game(grid, currentRobot)
-    }
-  }
-  private def run(positionCommand: Command.UpdateRobotPosition): Game = positionCommand match {
-    case Command.Place(x, y, direction) =>
+  def play(command: CommandUpdatingPosition): Game = command match {
+    case CommandUpdatingPosition.Place(x, y, direction) =>
         if (currentRobot.hasValidPositionOn(grid) && grid.x.contains(x) && grid.y.contains(y)) {
           Game(grid, Robot(x, y, direction))
         } else {
           Game(grid, currentRobot)
         }
-    case Command.Move =>
+    case CommandUpdatingPosition.Move =>
       if (currentRobot.hasValidPositionOn(grid)) {
         currentRobot.direction match {
           case North =>
@@ -37,17 +30,14 @@ case class Game(grid: Grid, currentRobot: Robot) {
       } else {
         Game(grid, currentRobot)
       }
-  }
-
-  private def rotate(rotateCommand: Command.ChangeDirectionOfRobot): Game = rotateCommand match {
-    case Command.Right =>
+    case CommandUpdatingPosition.Right =>
       currentRobot.direction match {
         case North => Game(grid, currentRobot.copy(direction = East))
         case East  => Game(grid, currentRobot.copy(direction = South))
         case South => Game(grid, currentRobot.copy(direction = West))
         case West  => Game(grid, currentRobot.copy(direction = North))
       }
-    case Command.Left =>
+    case CommandUpdatingPosition.Left =>
       currentRobot.direction match {
         case North => Game(grid, currentRobot.copy(direction = West))
         case East  => Game(grid, currentRobot.copy(direction = North))

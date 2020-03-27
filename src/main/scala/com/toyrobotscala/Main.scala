@@ -20,12 +20,12 @@ object Main extends IOApp {
   }
   def go[F[_] : Console : Monad](game: Game): F[Unit] = {
     ioOfMaybeCommand().flatMap {
-      case Some(Command.Report) =>
+      case Some(Command.UnchangedRobot(_)) =>
         ioOfReportCommand(game).flatMap { _ =>
           go(game)
         }
-      case Some(command) =>
-        val newGame = game.play(command)
+      case Some(Command.UpdateRobotPosition(updateCommand)) =>
+        val newGame = game.play(updateCommand)
         go(newGame)
       case None => go(game)
     }

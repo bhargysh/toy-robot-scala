@@ -3,15 +3,21 @@ package com.toyrobotscala
 sealed trait Command
 
 object Command {
-  sealed trait UpdateRobotPosition extends Command
-  sealed trait ChangeDirectionOfRobot extends Command
-  sealed trait UnchangedRobot extends Command
+  case class UpdateRobotPosition(command: CommandUpdatingPosition) extends Command
+  case class UnchangedRobot(command: CommandNotUpdatingPosition) extends Command
+}
 
-  case class Place(x: Int, y: Int, direction: Direction) extends UpdateRobotPosition
-  case object Move extends UpdateRobotPosition
+sealed trait CommandUpdatingPosition
 
-  case object Right extends ChangeDirectionOfRobot
-  case object Left extends ChangeDirectionOfRobot
+object CommandUpdatingPosition {
+  case class Place(x: Int, y: Int, direction: Direction) extends CommandUpdatingPosition
+  case object Move extends CommandUpdatingPosition
+  case object Right extends CommandUpdatingPosition
+  case object Left extends CommandUpdatingPosition
+}
 
-  case object Report extends UnchangedRobot
+sealed trait CommandNotUpdatingPosition
+
+object CommandNotUpdatingPosition {
+  case object Report extends CommandNotUpdatingPosition
 }

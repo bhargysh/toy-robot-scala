@@ -1,20 +1,49 @@
 package com.toyrobotscala
 
-import com.toyrobotscala.Direction.{North, South}
+import com.toyrobotscala.Direction.{East, North, South, West}
 import org.specs2.mutable.Specification
 
 class GameSpec extends Specification {
   "Game" should {
-    "play the game" in {
-      val testRobot = Robot(0, 1, North)
-      val testGrid = Grid(Range(1, 5), Range(1, 5))
-      val testGame = Game(testGrid, testRobot)
+    val grid = Grid(Range(0, 5), Range(0, 5))
+    val robot = Robot(4, 3, North)
+    val game = Game(grid, robot)
+    "return an updated game" in {
+      "when command is place" in {
+        val newRobot = Robot(2, 3, South)
+        val newGame = Game(grid, newRobot)
 
-      val newGame = Game(testGrid, testRobot.copy(x = 2, y = 3, direction = South))
+        game.play(CommandUpdatingPosition.Place(2, 3, South)) shouldEqual newGame
+      }
+      "when command is move" in {
+        val newRobot = Robot(4, 4, North)
+        val newGame = Game(grid, newRobot)
 
-      val testCommand = Command.Place(2, 3, South)
-      testGame.play(testCommand) shouldEqual newGame
+        game.play(CommandUpdatingPosition.Move) shouldEqual newGame
+      }
+      "when command is left" in {
+        val newRobot = Robot(4, 3, West)
+        val newGame = Game(grid, newRobot)
+
+        game.play(CommandUpdatingPosition.Left) shouldEqual newGame
+      }
+      "when command is right" in {
+        val newRobot = Robot(4, 3, East)
+        val newGame = Game(grid, newRobot)
+
+        game.play(CommandUpdatingPosition.Right) shouldEqual newGame
+      }
+    }
+    "return current game" in {
+      "when command is place and is not on grid" in {
+        game.play(CommandUpdatingPosition.Place(5, 5, South)) shouldEqual game
+      }
+      "when command is move and robot would fall off grid" in {
+        val robot = Robot(4, 4, East)
+        val game = Game(grid, robot)
+
+        game.play(CommandUpdatingPosition.Move) shouldEqual game
+      }
     }
   }
-
 }

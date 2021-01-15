@@ -7,7 +7,7 @@ class GameSpec extends Specification {
   "Game" should {
     val grid = Grid(Range(0, 5), Range(0, 5))
     val robot = Robot(4, 3, North)
-    val game = Game(grid, robot)
+    val game = Game(grid, robot, Set.empty[Obstacle])
     "return an updated game" in {
       "when command is place" in {
         val newRobot = Robot(2, 3, South)
@@ -32,6 +32,17 @@ class GameSpec extends Specification {
         val newGame = Game(grid, newRobot)
 
         game.play(CommandUpdatingPosition.Right) shouldEqual newGame
+      }
+      "when command is place obstacle" in {
+        val newGame = Game(grid, robot, Set(Obstacle(4, 4)))
+
+        game.play(CommandUpdatingPosition.PlaceObstacle) shouldEqual newGame
+      }
+      "when command is place obstacle and there is an obstacle there already" in {
+        val game = Game(grid, robot, Set(Obstacle(4, 4)))
+        val newGame = Game(grid, robot, Set(Obstacle(4, 4)))
+
+        game.play(CommandUpdatingPosition.PlaceObstacle) shouldEqual newGame
       }
     }
     "return current game" in {

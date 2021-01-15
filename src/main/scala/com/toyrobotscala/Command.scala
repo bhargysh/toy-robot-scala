@@ -14,6 +14,7 @@ object CommandUpdatingPosition {
   case object Move extends CommandUpdatingPosition
   case object Right extends CommandUpdatingPosition
   case object Left extends CommandUpdatingPosition
+  case object PlaceObstacle extends CommandUpdatingPosition
 }
 
 sealed trait CommandNotUpdatingPosition

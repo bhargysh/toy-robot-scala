@@ -2,7 +2,7 @@ package com.toyrobotscala
 
 import com.toyrobotscala.Direction.{East, North, South, West}
 
-case class Game(grid: Grid, currentRobot: Robot) {
+case class Game(grid: Grid, currentRobot: Robot, obstacle: Set[Obstacle] = Set.empty) {
 
   def play(command: CommandUpdatingPosition): Game = command match {
     case CommandUpdatingPosition.Place(x, y, direction) =>
@@ -44,6 +44,12 @@ case class Game(grid: Grid, currentRobot: Robot) {
         case South => Game(grid, currentRobot.copy(direction = East))
         case West  => Game(grid, currentRobot.copy(direction = South))
       }
+    case CommandUpdatingPosition.PlaceObstacle => currentRobot.direction match {
+      case North => Game(grid, currentRobot, obstacle ++ Set(Obstacle(currentRobot.x, currentRobot.y + 1)))
+      case East => Game(grid, currentRobot, obstacle ++ Set(Obstacle(currentRobot.x + 1, currentRobot.y)))
+      case South => Game(grid, currentRobot, obstacle ++ Set(Obstacle(currentRobot.x, currentRobot.y - 1)))
+      case West => Game(grid, currentRobot, obstacle ++ Set(Obstacle(currentRobot.x - 1, currentRobot.y)))
+    }
   }
 
   private def newRobotOrCurrent(grid: Grid, newRobot: Robot, currentRobot: Robot): Robot =

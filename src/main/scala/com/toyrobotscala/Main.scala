@@ -12,7 +12,7 @@ object Main extends IOApp {
 
     val robot = Robot(0, 0, North)
     val grid = Grid(Range(0, 5), Range(0, 5))
-    val initialGame = Game(grid, robot)
+    val initialGame = Game(grid, robot, Set.empty[Obstacle])
 
     greeting()
       .flatMap( _ => go(initialGame))
@@ -41,3 +41,9 @@ object Main extends IOApp {
     Console[F].printLine(game.currentRobot.toString)
   }
 }
+
+
+// 1. Extend toy robot with a PLACE_OBJECT command that places an object on grid
+//    - PLACE_OBJECT should place obstacle in front of current position of robot
+//    - PLACE_OBJECT input data: robot's position, grid
+// 2. Robot should not collide with any other object on the grid

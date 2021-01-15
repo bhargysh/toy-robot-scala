@@ -9,12 +9,9 @@ object Input {
     case "LEFT"   => Command.UpdateRobotPosition(CommandUpdatingPosition.Left)
     case "RIGHT"  => Command.UpdateRobotPosition(CommandUpdatingPosition.Right)
     case "REPORT" => Command.UnchangedRobot(CommandNotUpdatingPosition.Report)
+    case "PLACE_OBSTACLE" => Command.UpdateRobotPosition(CommandUpdatingPosition.PlaceObstacle)
     case placePattern(x, y, direction) => Command.UpdateRobotPosition(CommandUpdatingPosition.Place(x.toInt, y.toInt, Direction.fromStr(direction)))
   }
 
   private val placePattern: Regex = """^PLACE (\d+),(\d+),(NORTH|SOUTH|EAST|WEST)$""".r
-  def isPlace(rawInput: String): Boolean = {
-    placePattern.matches(rawInput)
-  }
-
 }

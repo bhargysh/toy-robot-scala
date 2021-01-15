@@ -11,11 +11,13 @@ class InputSpec extends Specification with org.specs2.specification.Tables {
       "LEFT" ! Some(Command.UpdateRobotPosition(CommandUpdatingPosition.Left)) |
       "RIGHT" ! Some(Command.UpdateRobotPosition(CommandUpdatingPosition.Right)) |
       "PLACE 2,4,NORTH" ! Some(Command.UpdateRobotPosition(CommandUpdatingPosition.Place(2,4,North))) |
+      "PLACE_OBSTACLE" ! Some(Command.UpdateRobotPosition(CommandUpdatingPosition.PlaceObstacle)) |
       "\n" ! None |
       "move" ! None |
       "left" ! None |
       "right" ! None |
-      "place" ! None | { (userInput, result) =>
+      "place" ! None |
+      "place obstacle" ! None | { (userInput, result) =>
       Input.parseValidCommand.lift(userInput) shouldEqual result
     }
     }

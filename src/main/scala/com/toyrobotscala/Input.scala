@@ -13,8 +13,4 @@ object Input {
   }
 
   private val placePattern: Regex = """^PLACE (\d+),(\d+),(NORTH|SOUTH|EAST|WEST)$""".r
-  def isPlace(rawInput: String): Boolean = {
-    placePattern.matches(rawInput)
-  }
-
 }

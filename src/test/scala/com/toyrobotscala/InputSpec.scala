@@ -1,19 +1,31 @@
 package com.toyrobotscala
 
+import com.toyrobotscala.Direction.North
 import org.specs2.mutable.Specification
 
-class InputSpec extends Specification {
-  "Input" should {
-    "return the move command when input is move" in {
-      val inputStr = "MOVE"
-      val result = Command.Move //TODO: for each valid input
-      Input.parseValidCommand(inputStr) shouldEqual result
+class InputSpec extends Specification with org.specs2.specification.Tables {
+  override def is =
+    s2"""
+      return an updating robot position ${ "userInput" | "" |>
+      "MOVE" ! Some(Command.UpdateRobotPosition(CommandUpdatingPosition.Move)) |
+      "LEFT" ! Some(Command.UpdateRobotPosition(CommandUpdatingPosition.Left)) |
+      "RIGHT" ! Some(Command.UpdateRobotPosition(CommandUpdatingPosition.Right)) |
+      "PLACE 2,4,NORTH" ! Some(Command.UpdateRobotPosition(CommandUpdatingPosition.Place(2,4,North))) |
+      "\n" ! None |
+      "move" ! None |
+      "left" ! None |
+      "right" ! None |
+      "place" ! None | { (userInput, result) =>
+      Input.parseValidCommand.lift(userInput) shouldEqual result
     }
-    "return the place command when input is place" in {
-      val inputStr = "PLACE 0,1,NORTH"
-      val result = Command.Place(0, 1, Direction.North) //TODO: for all the valid place possibilities
-      Input.parseValidCommand(inputStr) shouldEqual result
     }
-  }
+      return a not updating robot position ${ "userInput" | "" |>
+      "REPORT" ! Some(Command.UnchangedRobot(CommandNotUpdatingPosition.Report)) |
+      "\n" ! None |
+      "report" ! None | { (userInput, result ) =>
+      Input.parseValidCommand.lift(userInput) shouldEqual result
+    }
+    }
+      """
 
 }

@@ -11,25 +11,25 @@ class GameSpec extends Specification {
     "return an updated game" in {
       "when command is place" in {
         val newRobot = Robot(2, 3, South)
-        val newGame = Game(grid, newRobot)
+        val newGame = Game(grid, newRobot, Set.empty[Obstacle])
 
         game.play(CommandUpdatingPosition.Place(2, 3, South)) shouldEqual newGame
       }
       "when command is move" in {
         val newRobot = Robot(4, 4, North)
-        val newGame = Game(grid, newRobot)
+        val newGame = Game(grid, newRobot, Set.empty[Obstacle])
 
         game.play(CommandUpdatingPosition.Move) shouldEqual newGame
       }
       "when command is left" in {
         val newRobot = Robot(4, 3, West)
-        val newGame = Game(grid, newRobot)
+        val newGame = Game(grid, newRobot, Set.empty[Obstacle])
 
         game.play(CommandUpdatingPosition.Left) shouldEqual newGame
       }
       "when command is right" in {
         val newRobot = Robot(4, 3, East)
-        val newGame = Game(grid, newRobot)
+        val newGame = Game(grid, newRobot, Set.empty[Obstacle])
 
         game.play(CommandUpdatingPosition.Right) shouldEqual newGame
       }
@@ -51,9 +51,24 @@ class GameSpec extends Specification {
       }
       "when command is move and robot would fall off grid" in {
         val robot = Robot(4, 4, East)
-        val game = Game(grid, robot)
+        val game = Game(grid, robot, Set.empty[Obstacle])
 
         game.play(CommandUpdatingPosition.Move) shouldEqual game
+      }
+      "when command is place and there is an obstacle there" in {
+        val game = Game(grid, robot, Set(Obstacle(4, 4)))
+
+        game.play(CommandUpdatingPosition.Place(4, 4, North)) shouldEqual game
+      }
+      "when command is move and there is an obstacle there" in {
+        val game = Game(grid, robot, Set(Obstacle(4, 4)))
+
+        game.play(CommandUpdatingPosition.Move) shouldEqual game
+      }
+      "when command is place obstacle and is not on grid" in {
+        val robot = Robot(4, 4, North)
+        val game = Game(grid, robot, Set.empty[Obstacle])
+        game.play(CommandUpdatingPosition.PlaceObstacle) shouldEqual game
       }
     }
   }

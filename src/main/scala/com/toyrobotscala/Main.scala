@@ -41,9 +41,3 @@ object Main extends IOApp {
     Console[F].printLine(game.currentRobot.toString)
   }
 }
-
-
-// 1. Extend toy robot with a PLACE_OBJECT command that places an object on grid
-//    - PLACE_OBJECT should place obstacle in front of current position of robot
-//    - PLACE_OBJECT input data: robot's position, grid
-// 2. Robot should not collide with any other object on the grid
